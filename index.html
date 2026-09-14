@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="课表">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="apple-touch-icon.png">
 <title>课表</title>
 <style>
   :root {
@@ -364,8 +368,7 @@
         var k = idx * e._lanes + e._lane;
         var m = n * e._lanes;
         var col = paletteOf(e.c.kcmc);
-        var sub = '<div class="s">' + escHtml(e.timeLabel) + '</div>' +
-          (e.c.cdmc ? '<div class="s">' + escHtml(e.c.cdmc) + '</div>' : '');
+        var sub = e.c.cdmc ? '<div class="s">' + escHtml(e.c.cdmc) + '</div>' : '';
         blocks += '<div class="ev" style="top:' + top + 'px;height:' + h + 'px;' +
           'left:calc(46px + (100% - 46px) * ' + k + ' / ' + m + ');width:calc((100% - 46px) / ' + m + ');' +
           '--evbg:' + col[0] + ';--evbd:' + col[1] + ';--evtx:' + col[2] + '">' +
