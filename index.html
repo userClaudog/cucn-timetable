@@ -8,12 +8,14 @@
   :root {
     --bg: #f3f5f8; --card: #ffffff; --text: #1b1f26; --muted: #667085;
     --line: #e6e9ef; --accent: #2f6bff; --accent-soft: #eaf0ff;
-    --ok: #12b76a; --warn-bg: #fff7e6; --warn-text: #b45309; --warn-line: #fde2b8;
+    --ok: #12b76a; --ok-soft: rgba(18,183,106,.07);
+    --warn-bg: #fff7e6; --warn-text: #b45309; --warn-line: #fde2b8;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #0e1116; --card: #161b23; --text: #e8ebf0; --muted: #8b94a3;
       --line: #242b36; --accent: #5b8cff; --accent-soft: #1c2840;
+      --ok-soft: rgba(18,183,106,.10);
       --warn-bg: #2b2313; --warn-text: #e3a74b; --warn-line: #4a3b1c;
     }
   }
@@ -24,7 +26,7 @@
     font: 15px/1.5 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 640px; margin: 0 auto; padding: 10px 10px 40px; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 10px 10px 40px; }
 
   /* ---------- 紧凑头部 ---------- */
   header.hd {
@@ -48,48 +50,51 @@
   }
   .hd-row2 select option { color: #1b1f26; }
 
-  /* ---------- 横幅 ---------- */
   .banner {
     margin: 10px 0 0; padding: 8px 12px; border-radius: 10px; font-size: 12.5px;
     background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--warn-line);
   }
 
-  /* ---------- 一天的时间轴 ---------- */
-  .day { margin-top: 14px; }
-  .day-head { display: flex; align-items: baseline; gap: 8px; margin: 0 2px 6px; }
-  .day-head .dname { font-size: 15px; font-weight: 700; }
-  .day-head .ddate { color: var(--muted); font-size: 12px; }
-  .today-tag {
-    font-size: 10.5px; font-weight: 700; color: #fff; background: var(--ok);
-    border-radius: 999px; padding: 1px 7px;
+  /* ---------- 周课表网格 ---------- */
+  .wk-wrap {
+    margin-top: 12px; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--card); overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
-  .tl {
-    position: relative; background: var(--card); border: 1px solid var(--line);
-    border-radius: 12px; overflow: hidden;
+  .wk-head {
+    display: flex; position: sticky; top: 0; z-index: 5;
+    background: var(--card); border-bottom: 1px solid var(--line);
+    border-radius: 12px 12px 0 0;
   }
-  .tl-lbl {
-    position: absolute; left: 6px; width: 44px; text-align: right;
-    font-size: 10.5px; color: var(--muted); transform: translateY(-6px);
+  .wk-corner { width: 46px; flex-shrink: 0; }
+  .wk-col {
+    flex: 1; min-width: 84px; text-align: center; padding: 6px 2px 5px;
+    font-size: 12.5px; font-weight: 700; border-left: 1px solid var(--line); position: relative;
+  }
+  .wk-col .d { display: block; font-size: 10.5px; font-weight: 400; color: var(--muted); margin-top: 1px; }
+  .wk-col.today { background: var(--ok-soft); }
+  .wk-col .tag {
+    position: absolute; top: 4px; right: 4px; font-size: 9.5px; font-weight: 700;
+    color: #fff; background: var(--ok); border-radius: 999px; padding: 0 6px; line-height: 1.6;
+  }
+  .wk-body { position: relative; }
+  .h-line { position: absolute; left: 46px; right: 0; border-top: 1px solid var(--line); }
+  .h-line.half { border-top: 1px dashed var(--line); opacity: .55; }
+  .h-lbl {
+    position: absolute; left: 2px; width: 40px; text-align: right;
+    font-size: 10px; color: var(--muted); transform: translateY(-6px);
     font-variant-numeric: tabular-nums;
   }
-  .tl-lbl::after { /* 刻度小横线 */
-    content: ""; position: absolute; right: -8px; top: 8px;
-    width: 6px; height: 1px; background: var(--line);
-  }
+  .v-line { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--line); }
+  .col-hl { position: absolute; top: 0; bottom: 0; background: var(--ok-soft); }
   .ev {
-    position: absolute; left: 56px; right: 8px;
-    border-radius: 8px; padding: 4px 8px 3px;
-    background: var(--evbg, var(--accent-soft));
-    border-left: 3px solid var(--evbd, var(--accent));
-    overflow: hidden;
+    position: absolute; border-radius: 7px; padding: 3px 4px 2px; overflow: hidden; z-index: 1;
+    background: var(--evbg, var(--accent-soft)); border: 1px solid var(--evbd, var(--accent));
   }
-  .ev .ev-name { font-weight: 700; font-size: 13px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ev .ev-sub { font-size: 11px; color: var(--muted); line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .tl-gap {
-    position: absolute; left: 56px; right: 8px; text-align: center;
-    font-size: 10.5px; color: var(--muted); opacity: .75;
-    transform: translateY(-50%);
+  .ev .n {
+    font-size: 11.5px; font-weight: 700; line-height: 1.25;
+    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   }
+  .ev .s { font-size: 10px; color: var(--muted); line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .empty { text-align: center; color: var(--muted); padding: 30px 0; font-size: 14px; }
   .empty .big { font-size: 30px; margin-bottom: 6px; }
@@ -103,7 +108,7 @@
   <div class="banner" id="sample-banner" hidden>
     ⚠️ 当前展示的是<b>示例数据</b>（data.js 中标记了 _sample）。请用油猴脚本导出真实课表替换 data.js 后再部署。
   </div>
-  <main id="content"></main>
+  <div id="grid"></div>
   <footer id="foot"></footer>
 </div>
 
@@ -140,18 +145,12 @@
   function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function weekOf(date) {
     var s = parseDate(T.semesterStart); if (!s) return null;
-    // 用本地日历日映射到 UTC 正午再相减：整周差不受夏令时/时区影响
     var utcNoon = function (d) { return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 12); };
     return Math.floor((utcNoon(day0(date)) - utcNoon(s)) / 86400000 / 7) + 1;
   }
   function xqjOf(d) { var g = d.getDay(); return g === 0 ? 7 : g; }
   function toMin(hm) { var p = String(hm).split(':'); return (+p[0]) * 60 + (+p[1] || 0); }
   function fmtHM(min) { return Math.floor(min / 60) + ':' + String(min % 60).padStart(2, '0'); }
-  function fmtDur(min) {
-    if (min < 60) return min + '分钟';
-    var h = Math.floor(min / 60), m = min % 60;
-    return m ? h + '小时' + m + '分' : h + '小时';
-  }
   function fmtWeekRange(week) {
     var s = parseDate(T.semesterStart); if (!s) return '';
     var a = new Date(s); a.setDate(a.getDate() + (week - 1) * 7);
@@ -193,15 +192,13 @@
     return nums.length ? [+nums[0], +nums[nums.length - 1]] : [1, 1];
   }
 
-  /* ---------------- 课程块调色板（按课程名哈希取色） ---------------- */
+  /* ---------------- 调色板（按课程名哈希取色） ---------------- */
   var PALETTE = [
     ['#eaf1ff', '#3b6ef5'], ['#fff1e6', '#e0782a'], ['#e9f9ef', '#1f9d57'],
     ['#fdeef4', '#d43d7f'], ['#f1edfc', '#7a52d0'], ['#e4f8f9', '#0f8e99'],
     ['#fff8e1', '#b8960a'], ['#fdeeee', '#c24040']
   ];
-  function paletteOf(name) {
-    return PALETTE[fnv1a(String(name)) % PALETTE.length];
-  }
+  function paletteOf(name) { return PALETTE[fnv1a(String(name)) % PALETTE.length]; }
 
   /* ---------------- 数据预处理 ---------------- */
   if (!T || !Array.isArray(T.courses)) T = { name: '课表', semesterStart: '', courses: [] };
@@ -217,7 +214,7 @@
   var inTerm = start && curWeek >= minWeek && curWeek <= maxWeek;
 
   var state = { week: 'current' };
-  var qw = new URLSearchParams(location.search).get('week');          // 直达链接：?week=3
+  var qw = new URLSearchParams(location.search).get('week');
   if (qw && /^\d{1,2}$/.test(qw)) state.week = +qw;
   function effWeek() { return state.week === 'current' ? curWeek : state.week; }
 
@@ -273,67 +270,107 @@
     return out;
   }
 
-  function dayBlock(day, dateObj, evs) {
-    evs.sort(function (a, b) { return a.start - b.start || a.end - b.end; });
-    var dayStart = evs[0].start, dayEnd = evs[0].end;
-    evs.forEach(function (e) { if (e.end > dayEnd) dayEnd = e.end; });
-    var PX = 1;                                          // 1 分钟 = 1px，间隙真实反映时间间隔
-    var total = (dayEnd - dayStart) * PX + 10;
+  function renderGrid(week) {
+    var evs = buildEvents(week);
+    if (!evs.length) {
+      return '<div class="empty"><div class="big">🎉</div>第 ' + week + ' 周没有课</div>';
+    }
+    var days = [], daySet = {};
+    evs.forEach(function (e) { if (!daySet[e.day]) { daySet[e.day] = 1; days.push(e.day); } });
+    days.sort(function (a, b) { return a - b; });
+    var n = days.length;
 
-    var rows = [];
-    for (var i = 0; i < evs.length; i++) {
-      var e = evs[i];
-      var top = (e.start - dayStart) * PX + 6;
-      var h = Math.max((e.end - e.start) * PX - 4, 40);
-      var col = paletteOf(e.c.kcmc);
-      var sub = e.timeLabel + ' · ' + escHtml(e.c.jcs) + ' 节';
-      if (e.c.cdmc || e.c.xm) sub += ' · ' + escHtml([e.c.cdmc, e.c.xm].filter(Boolean).join(' '));
-      rows.push('<div class="ev" style="top:' + top + 'px;height:' + h + 'px;--evbg:' + col[0] + ';--evbd:' + col[1] + '">' +
-        '<div class="ev-name">' + escHtml(e.c.kcmc) + '</div>' +
-        '<div class="ev-sub">' + sub + '</div></div>');
-      rows.push('<div class="tl-lbl" style="top:' + top + 'px">' + e.timeLabel.slice(0, 5) + '</div>');
+    // 时间轴范围：整点对齐，纵轴每隔一小时一个单位
+    var minS = evs[0].start, maxE = evs[0].end;
+    evs.forEach(function (e) { if (e.start < minS) minS = e.start; if (e.end > maxE) maxE = e.end; });
+    var axisStart = Math.floor(minS / 60) * 60;
+    var axisEnd = Math.ceil(maxE / 60) * 60;
+    var HOUR_PX = 60;                       // 每小时 60px
+    var totalH = (axisEnd - axisStart) / 60 * HOUR_PX;
 
-      // 与下一节课之间有明显间隔时，标出间隔时长
-      if (i + 1 < evs.length) {
-        var gap = evs[i + 1].start - e.end;
-        if (gap >= 40) {
-          var gTop = (e.end - dayStart) * PX + (gap / 2) * PX + 2;
-          rows.push('<div class="tl-gap" style="top:' + gTop + 'px">间隔 ' + fmtDur(gap) + '</div>');
+    // 同一天同一时段重叠的课：并排车道
+    days.forEach(function (d) {
+      var colEvs = evs.filter(function (e) { return e.day === d; })
+        .sort(function (a, b) { return a.start - b.start; });
+      var laneEnds = [];
+      colEvs.forEach(function (e) {
+        var placed = false;
+        for (var l = 0; l < laneEnds.length; l++) {
+          if (laneEnds[l] <= e.start) { laneEnds[l] = e.end; e._lane = l; placed = true; break; }
         }
-      }
+        if (!placed) { e._lane = laneEnds.length; laneEnds.push(e.end); }
+      });
+      colEvs.forEach(function (e) { e._lanes = laneEnds.length; });
+    });
+
+    // 表头
+    var head = '<div class="wk-head"><div class="wk-corner"></div>';
+    days.forEach(function (d) {
+      var date = new Date(start);
+      date.setDate(date.getDate() + (week - 1) * 7 + (d - 1));
+      var isToday = iso(date) === iso(today);
+      head += '<div class="wk-col' + (isToday ? ' today' : '') + '">周' + DAY_CN[d - 1] +
+        '<span class="d">' + fmtMD(date) + '</span>' +
+        (isToday ? '<span class="tag">今天</span>' : '') + '</div>';
+    });
+    head += '</div>';
+
+    // 每小时横线与标签（整点实线 + 标签，半点虚线）
+    var lines = '';
+    for (var t = axisStart; t <= axisEnd; t += 60) {
+      lines += '<div class="h-line" style="top:' + (t - axisStart) + 'px"></div>';
+      if (t < axisEnd) lines += '<div class="h-lbl" style="top:' + (t - axisStart) + 'px">' + fmtHM(t) + '</div>';
+    }
+    for (var t2 = axisStart + 30; t2 < axisEnd; t2 += 60) {
+      lines += '<div class="h-line half" style="top:' + (t2 - axisStart) + 'px"></div>';
+    }
+    // 列分隔竖线
+    for (var vi = 1; vi < n; vi++) {
+      lines += '<div class="v-line" style="left:calc(46px + (100% - 46px) * ' + vi + ' / ' + n + ')"></div>';
+    }
+    // 今天列高亮
+    var ti = days.indexOf(xqjOf(today));
+    if (ti >= 0) {
+      lines += '<div class="col-hl" style="left:calc(46px + (100% - 46px) * ' + ti + ' / ' + n + ');width:calc((100% - 46px) / ' + n + ')"></div>';
     }
 
-    var isToday = iso(dateObj) === iso(today);
-    return '<div class="day"' + (isToday ? ' data-today="1"' : '') + '>' +
-      '<div class="day-head"><span class="dname">周' + DAY_CN[day - 1] + '</span>' +
-      '<span class="ddate">' + fmtMD(dateObj) + '</span>' +
-      (isToday ? '<span class="today-tag">今天</span>' : '') + '</div>' +
-      '<div class="tl" style="height:' + total + 'px">' + rows.join('') + '</div></div>';
+    // 课程块
+    var blocks = '';
+    days.forEach(function (d) {
+      var idx = days.indexOf(d);
+      var colEvs = evs.filter(function (e) { return e.day === d; })
+        .sort(function (a, b) { return a.start - b.start; });
+      colEvs.forEach(function (e) {
+        var top = (e.start - axisStart) / 60 * HOUR_PX + 1;
+        var h = Math.max((e.end - e.start) / 60 * HOUR_PX - 2, 34);
+        var k = idx * e._lanes + e._lane;
+        var m = n * e._lanes;
+        var col = paletteOf(e.c.kcmc);
+        var sub = e.timeLabel + (e.c.cdmc ? ' · ' + e.c.cdmc : '');
+        blocks += '<div class="ev" style="top:' + top + 'px;height:' + h + 'px;' +
+          'left:calc(46px + (100% - 46px) * ' + k + ' / ' + m + ');width:calc((100% - 46px) / ' + m + ');' +
+          '--evbg:' + col[0] + ';--evbd:' + col[1] + '">' +
+          '<div class="n">' + escHtml(e.c.kcmc) + '</div>' +
+          '<div class="s">' + escHtml(sub) + '</div></div>';
+      });
+    });
+
+    return '<div class="wk-wrap"><div class="wk" style="min-width:' + (46 + n * 88) + 'px">' +
+      head + '<div class="wk-body" style="height:' + totalH + 'px">' + lines + blocks + '</div></div></div>';
   }
 
   function render() {
     renderHead();
     var w = effWeek();
-    var out = [];
+    var html;
     if (w === null || !start || w < minWeek || w > maxWeek) {
-      out.push('<div class="empty"><div class="big">🏖️</div>' +
+      html = '<div class="empty"><div class="big">🏖️</div>' +
         (start ? '当前不在本学期课表周次内（第 ' + minWeek + ' – ' + maxWeek + ' 周）' : '未配置开学日期（semesterStart）') +
-        '<br><span style="font-size:12px">可用上面下拉跳转到任意一周</span></div>');
+        '<br><span style="font-size:12px">可用上面下拉跳转到任意一周</span></div>';
     } else {
-      var evs = buildEvents(w);
-      var byDay = {};
-      evs.forEach(function (e) { (byDay[e.day] = byDay[e.day] || []).push(e); });
-      var shown = 0;
-      for (var d = 1; d <= 7; d++) {
-        if (!byDay[d] || !byDay[d].length) continue;
-        var date = new Date(start);
-        date.setDate(date.getDate() + (w - 1) * 7 + (d - 1));
-        out.push(dayBlock(d, date, byDay[d]));
-        shown++;
-      }
-      if (!shown) out.push('<div class="empty"><div class="big">🎉</div>第 ' + w + ' 周没有课</div>');
+      html = renderGrid(w);
     }
-    document.getElementById('content').innerHTML = out.join('');
+    document.getElementById('grid').innerHTML = html;
 
     var foot = '数据更新于 ' + escHtml(T.updatedAt ? String(T.updatedAt).slice(0, 16).replace('T', ' ') : '—') +
       ' · 课表更新后重新导出并上传，手机日历会自动同步';
